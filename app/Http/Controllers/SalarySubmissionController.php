@@ -25,9 +25,7 @@ class SalarySubmissionController extends Controller
             'currency'        => ['required', Rule::in(['AMD', 'USD', 'EUR'])],
             'period'          => ['required', Rule::in(['Monthly', 'Yearly'])],
             'netOrGross'      => ['required', Rule::in(['Net', 'Gross'])],
-            'location'        => ['required', 'string', 'max:50'],
             'companyName'     => ['nullable', 'string', 'max:150'],
-            'contractType'    => ['nullable', Rule::in(['Employee', 'Contractor'])],
             'techTags'        => ['nullable', 'array'],
             'techTags.*'      => ['string', 'max:50'],
         ]);
@@ -41,9 +39,7 @@ class SalarySubmissionController extends Controller
             'currency'         => $validated['currency'],
             'period'           => $validated['period'],
             'net_or_gross'     => $validated['netOrGross'],
-            'location'         => $validated['location'],
             'company_name'     => $validated['companyName'] ?? null,
-            'contract_type'    => $validated['contractType'] ?? null,
             'tech_tags'        => $validated['techTags'] ?? null,
         ]);
 
@@ -63,14 +59,8 @@ class SalarySubmissionController extends Controller
         if ($request->filled('level')) {
             $query->where('level', $request->input('level'));
         }
-        if ($request->filled('location')) {
-            $query->where('location', $request->input('location'));
-        }
         if ($request->filled('currency')) {
             $query->where('currency', $request->input('currency'));
-        }
-        if ($request->filled('contract_type')) {
-            $query->where('contract_type', $request->input('contract_type'));
         }
 
         $submissions = $query
@@ -83,9 +73,7 @@ class SalarySubmissionController extends Controller
                 'currency',
                 'period',
                 'net_or_gross',
-                'location',
                 'company_name',
-                'contract_type',
                 'tech_tags',
                 'created_at',
             ])
@@ -109,16 +97,10 @@ class SalarySubmissionController extends Controller
             ->orderByDesc('count')
             ->get();
 
-        $byLocation = SalarySubmission::selectRaw('location, COUNT(*) as count')
-            ->groupBy('location')
-            ->orderByDesc('count')
-            ->get();
-
         return response()->json([
             'total_submissions' => $total,
             'by_role'           => $byRole,
             'by_level'          => $byLevel,
-            'by_location'       => $byLocation,
         ]);
     }
 }

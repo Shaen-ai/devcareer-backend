@@ -20,11 +20,9 @@ return new class extends Migration
             $table->enum('currency', ['AMD', 'USD', 'EUR'])->default('AMD');
             $table->enum('period', ['Monthly', 'Yearly'])->default('Monthly');
             $table->enum('net_or_gross', ['Net', 'Gross'])->default('Net');
-            $table->string('location', 50);
 
             // Optional fields
             $table->string('company_name', 150)->nullable();
-            $table->enum('contract_type', ['Employee', 'Contractor'])->nullable();
             $table->json('tech_tags')->nullable();
 
             $table->timestamps();
@@ -32,7 +30,6 @@ return new class extends Migration
             // Indexes for common query patterns
             $table->index('role');
             $table->index('level');
-            $table->index('location');
             $table->index('currency');
             $table->index('created_at');
         });

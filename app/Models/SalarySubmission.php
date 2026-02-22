@@ -15,9 +15,7 @@ class SalarySubmission extends Model
         'currency',
         'period',
         'net_or_gross',
-        'location',
         'company_name',
-        'contract_type',
         'tech_tags',
     ];
 
