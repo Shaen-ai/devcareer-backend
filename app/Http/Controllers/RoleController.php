@@ -8,11 +8,30 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    private const DEFAULTS = [
+        'DevOps',
+        'Backend',
+        'Frontend',
+        'Fullstack',
+        'QA',
+        'Mobile',
+        'Data Engineer',
+        'Security',
+        'Engineering Manager',
+        'Project Manager',
+    ];
+
     public function index(): JsonResponse
     {
-        $roles = Role::orderBy('name')->pluck('name');
+        $fromDb = Role::orderBy('name')->pluck('name')->all();
 
-        return response()->json($roles);
+        $merged = collect(self::DEFAULTS)
+            ->merge($fromDb)
+            ->unique()
+            ->sort()
+            ->values();
+
+        return response()->json($merged);
     }
 
     public function createOrUpdate(Request $request): JsonResponse

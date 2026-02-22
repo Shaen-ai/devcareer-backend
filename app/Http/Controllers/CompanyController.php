@@ -8,11 +8,40 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
+    private const DEFAULTS = [
+        'EPAM Systems',
+        'Synopsys Armenia',
+        'ServiceTitan',
+        'Picsart',
+        'Digitain',
+        'SoftConstruct',
+        'BetConstruct',
+        'Krisp',
+        'Renderforest',
+        'DataArt',
+        'Menu Group',
+        'SuperAnnotate',
+        'CodeSignal',
+        'Joomag',
+        'PandaDoc',
+        'Adobe',
+        'National Instruments',
+        'TeamViewer',
+        'Aarki',
+        'Simply Technologies',
+    ];
+
     public function index(): JsonResponse
     {
-        $companies = Company::orderBy('name')->pluck('name');
+        $fromDb = Company::orderBy('name')->pluck('name')->all();
 
-        return response()->json($companies);
+        $merged = collect(self::DEFAULTS)
+            ->merge($fromDb)
+            ->unique()
+            ->sort()
+            ->values();
+
+        return response()->json($merged);
     }
 
     public function createOrUpdate(Request $request): JsonResponse
